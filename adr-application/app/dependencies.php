@@ -7,6 +7,7 @@ use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Twig\Environment;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
@@ -24,5 +25,19 @@ return function (ContainerBuilder $containerBuilder) {
 
             return $logger;
         },
+        Environment::class => function (ContainerInterface $c): Environment {
+            $settings = $c->get('settings');
+            $loader = new Twig\Loader\FilesystemLoader(__DIR__ . '/../resources/views');
+
+            $twig = new Twig\Environment($loader, [
+                __DIR__ . '/../var/cache'
+            ]);
+
+            if (isset($settings['app_env']) && $settings['app_env'] === 'DEVELOPMENT') {
+                $twig->enableDebug();
+            }
+
+            return $twig;
+        }
     ]);
 };

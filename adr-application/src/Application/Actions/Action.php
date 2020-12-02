@@ -9,6 +9,10 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 abstract class Action
 {
@@ -33,17 +37,25 @@ abstract class Action
     protected $args;
 
     /**
-     * @param LoggerInterface $logger
+     * @var Environment
      */
-    public function __construct(LoggerInterface $logger)
+    protected $twig;
+
+    /**
+     * Action constructor.
+     * @param LoggerInterface $logger
+     * @param Environment $twig
+     */
+    public function __construct(LoggerInterface $logger, Environment $twig)
     {
         $this->logger = $logger;
+        $this->twig = $twig;
     }
 
     /**
-     * @param Request  $request
+     * @param Request $request
      * @param Response $response
-     * @param array    $args
+     * @param array $args
      * @return Response
      * @throws HttpNotFoundException
      * @throws HttpBadRequestException
@@ -56,8 +68,8 @@ abstract class Action
 
         try {
             return $this->action();
-        } catch (DomainRecordNotFoundException $e) {
-            throw new HttpNotFoundException($this->request, $e->getMessage());
+        } catch (DomainRecordNotFoundException $exception) {
+            throw new HttpNotFoundException($this->request, $exception->getMessage());
         }
     }
 
@@ -84,7 +96,7 @@ abstract class Action
     }
 
     /**
-     * @param  string $name
+     * @param string $name
      * @return mixed
      * @throws HttpBadRequestException
      */
@@ -98,7 +110,8 @@ abstract class Action
     }
 
     /**
-     * @param  array|object|null $data
+     * @param null $data
+     * @param int $statusCode
      * @return Response
      */
     protected function respondWithData($data = null, int $statusCode = 200): Response
@@ -118,7 +131,25 @@ abstract class Action
         $this->response->getBody()->write($json);
 
         return $this->response
-                    ->withHeader('Content-Type', 'application/json')
-                    ->withStatus($payload->getStatusCode());
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus($payload->getStatusCode());
+    }
+
+    /**
+     * @param ActionView $actionView
+     * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    protected function render(ActionView $actionView): Response
+    {
+        $this->response->getBody()->write(
+            $this->twig->render($actionView->getTemplate(), $actionView->getData())
+        );
+
+        return $this->response
+            ->withHeader('Content-Type', 'text/html')
+            ->withStatus($actionView->getStatusCode());
     }
 }

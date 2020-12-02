@@ -6,5 +6,8 @@ update:
 start:
 	- ${DOCKER_RUN} composer run start
 
+test:
+	- ${DOCKER_RUN} composer run test
+
 bash:
 	- ${DOCKER_RUN} bash
