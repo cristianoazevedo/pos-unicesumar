@@ -1,0 +1,72 @@
+<?php
+/**
+ * @var Laminas\View\Renderer\PhpRenderer $this
+ */
+?>
+<div class="page-content page-container" id="page-content">
+    <div class="padding">
+        <div class="row container d-flex justify-content-center">
+            <div class="col-md-12">
+                <h4>Awesome Todo list</h4>
+                <form action="/application/save" method="post">
+                    <div class="form-row">
+                        <div class="col-10">
+                            <input type="text" name="description" class="form-control"
+                                   placeholder="What do you need to do today?">
+                        </div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="list-wrapper">
+                    <ul class="d-flex flex-column-reverse todo-list">
+<?php
+                        foreach ($this->tasks as $task) {
+                            $classList = null;
+                            $checked = null;
+
+                            if ($task->done) {
+                                $classList = 'completed';
+                                $checked = 'checked="checked"';
+                            }
+?>
+                            <li class="<?= $classList ?>">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="checkbox" name="tasks" value="<?= $task->id ?>"
+                                               onclick='handleClick(this);'
+                                               type="checkbox" <?= $checked ?>> <?= $task->description ?>
+                                        <i class="input-helper"></i>
+                                    </label>
+                                </div>
+                                <i class="remove mdi mdi-close-circle-outline"></i>
+                            </li>
+<?php
+                        }
+?>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function handleClick(cb) {
+        const url = "/application/done/" + cb.value;
+        const xhr = new XMLHttpRequest();
+
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.onload = function () {
+            const response = JSON.parse(xhr.responseText);
+            if (xhr.readyState == 4 && xhr.status == "200") {
+                location.reload();
+            } else {
+                console.error(response);
+            }
+        };
+
+        xhr.send();
+    }
+</script>

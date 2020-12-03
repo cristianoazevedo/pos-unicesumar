@@ -3,8 +3,8 @@ DOCKER_RUN:= docker run --rm -it --net=host --name="adr-application" -v "${PWD}"
 update:
 	- ${DOCKER_RUN} composer update
 
-start:
-	- ${DOCKER_RUN} composer run start
+serve:
+	- ${DOCKER_RUN} composer run serve
 
 test:
 	- ${DOCKER_RUN} composer run test

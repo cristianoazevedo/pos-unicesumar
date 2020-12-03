@@ -15,7 +15,7 @@ class SaveTaskAction extends TaskAction
     {
         $formData = $this->request->getParsedBody();
 
-        $this->taskRepository->save($formData['description']);
+        $this->repository->save($formData['description']);
 
         return $this->response->withHeader('Location', '/tasks')->withStatus(200);
     }

@@ -13,7 +13,7 @@ class ListTaskAction extends TaskAction
      */
     protected function action(): Response
     {
-        $tasks = $this->taskRepository->all();
+        $tasks = $this->repository->all();
 
         $this->logger->info("task list was viewed.");
 

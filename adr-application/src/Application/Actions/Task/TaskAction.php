@@ -13,7 +13,7 @@ abstract class TaskAction extends Action
     /**
      * @var TaskRepository
      */
-    protected $taskRepository;
+    protected $repository;
 
     /**
      * TaskAction constructor.
@@ -24,6 +24,6 @@ abstract class TaskAction extends Action
     public function __construct(LoggerInterface $logger, TaskRepository $taskRepository, Environment $twig)
     {
         parent::__construct($logger, $twig);
-        $this->taskRepository = $taskRepository;
+        $this->repository = $taskRepository;
     }
 }

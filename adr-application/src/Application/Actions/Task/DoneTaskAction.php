@@ -13,7 +13,7 @@ class DoneTaskAction extends TaskAction
     protected function action(): Response
     {
         $taskId = (int) $this->resolveArg('id');
-        $task = $this->taskRepository->find($taskId);
+        $task = $this->repository->find($taskId);
 
         $task->done = $task->done ? 0 : 1;
 
