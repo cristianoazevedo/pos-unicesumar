@@ -1,3 +1,5 @@
+DOCKER_MYSQL_EXC=docker exec -it mysqldb
+
 install:
 	- cd adr-application && make update
 	- cd mvc-application && make update
@@ -16,3 +18,6 @@ mysql-restart:
 
 mysql-stop:
 	- docker-compose stop
+
+migrate:mysql-up
+	- - ${DOCKER_MYSQL_EXC} sh -c "mysql --user=root -p xpto < migrations/xpto.sql"
