@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Application\Actions\Task;
 
-use App\Application\Actions\ActionView;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class SaveTaskAction extends TaskAction
@@ -17,6 +16,6 @@ class SaveTaskAction extends TaskAction
 
         $this->repository->save($formData['description']);
 
-        return $this->response->withHeader('Location', '/tasks')->withStatus(200);
+        return $this->responder->redirect($this->response, '/tasks');
     }
 }

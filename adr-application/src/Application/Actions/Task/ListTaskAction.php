@@ -19,6 +19,6 @@ class ListTaskAction extends TaskAction
 
         $data = ['tasks' => $tasks->toArray()];
 
-        return $this->render(new ActionView($data, 'home.twig'));
+        return $this->responder->render($this->response, new ActionView($data, 'home.twig'));
     }
 }

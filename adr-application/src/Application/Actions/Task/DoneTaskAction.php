@@ -12,13 +12,13 @@ class DoneTaskAction extends TaskAction
      */
     protected function action(): Response
     {
-        $taskId = (int) $this->resolveArg('id');
+        $taskId = (int)$this->resolveArg('id');
         $task = $this->repository->find($taskId);
 
         $task->done = $task->done ? 0 : 1;
 
         $task->save();
 
-        return $this->respondWithData($task);
+        return $this->responder->respondWithData($this->response, $task);
     }
 }

@@ -37,19 +37,12 @@ abstract class Action
     protected $args;
 
     /**
-     * @var Environment
-     */
-    protected $twig;
-
-    /**
      * Action constructor.
      * @param LoggerInterface $logger
-     * @param Environment $twig
      */
-    public function __construct(LoggerInterface $logger, Environment $twig)
+    public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
-        $this->twig = $twig;
     }
 
     /**
@@ -107,49 +100,5 @@ abstract class Action
         }
 
         return $this->args[$name];
-    }
-
-    /**
-     * @param null $data
-     * @param int $statusCode
-     * @return Response
-     */
-    protected function respondWithData($data = null, int $statusCode = 200): Response
-    {
-        $payload = new ActionPayload($statusCode, $data);
-
-        return $this->respond($payload);
-    }
-
-    /**
-     * @param ActionPayload $payload
-     * @return Response
-     */
-    protected function respond(ActionPayload $payload): Response
-    {
-        $json = json_encode($payload, JSON_PRETTY_PRINT);
-        $this->response->getBody()->write($json);
-
-        return $this->response
-            ->withHeader('Content-Type', 'application/json')
-            ->withStatus($payload->getStatusCode());
-    }
-
-    /**
-     * @param ActionView $actionView
-     * @return Response
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    protected function render(ActionView $actionView): Response
-    {
-        $this->response->getBody()->write(
-            $this->twig->render($actionView->getTemplate(), $actionView->getData())
-        );
-
-        return $this->response
-            ->withHeader('Content-Type', 'text/html')
-            ->withStatus($actionView->getStatusCode());
     }
 }
