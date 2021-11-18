@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class DoneTaskAction extends TaskAction
 {
-    /**
+    /**+
      * {@inheritdoc}
      */
     protected function action(): Response

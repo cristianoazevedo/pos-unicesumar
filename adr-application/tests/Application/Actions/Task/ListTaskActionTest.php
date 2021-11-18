@@ -7,13 +7,23 @@ use App\Application\Actions\Task\ListTaskAction;
 use App\Domain\Task\Task;
 use App\Infrastructure\Persistence\Task\TaskCreatorRepository;
 use Illuminate\Database\Eloquent\Collection;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpBadRequestException;
+use Slim\Exception\HttpNotFoundException;
 use Slim\Psr7\Response;
 use Tests\TestCase;
 use Twig\Environment;
 
 class ListTaskActionTest extends TestCase
 {
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws HttpBadRequestException
+     * @throws HttpNotFoundException
+     */
     public function testAction()
     {
         $app = $this->getAppInstance();
